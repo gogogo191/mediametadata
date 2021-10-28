@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div style="border-radius: 1rem; margin: 2rem; text-align: center;">
+        <h1>
+            Conner Classification
+        </h1>
+
+        <form action="/ImageEditor/connerClassification/" method="post">
+            {% csrf_token %}
+            <div>
+                <input type="text" name="video_name">
+
+            </div>
+
+            <input type="submit" class="btn btn-primary" value="POST">
+
+        </form>
+
+    </div>
+
+{% endblock %}

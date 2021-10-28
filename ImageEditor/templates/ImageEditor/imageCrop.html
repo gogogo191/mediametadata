@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div style="border-radius: 1rem; margin: 2rem; text-align: center;">
+        <h1>
+            Video Upload
+        </h1>
+
+        <form action="/ImageEditor/imageCrop/" method="post">
+            {% csrf_token %}
+            <div>
+                <div> LEFT : <input type="text" name="left"> </div>
+                <div> RIGHT : <input type="text" name="right"> </div>
+                <div> TOP : <input type="text" name="top">  </div>
+                <div> BOTTOM : <input type="text" name="bottom"> </div>
+
+            </div>
+
+            <input type="submit" class="btn btn-primary" value="POST">
+
+        </form>
+
+        <h1>
+            {{  path  }}
+        </h1>
+
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+th, td {
+  border: 1px solid black;
+}
+
+</style>
+    <div style="border-radius: 1rem; margin: 2rem; text-align: center;">
+        <p>[ 번호 : {{ video.pk }} ]</p>
+        <h1>
+            Video 상세 정보
+        </h1>
+
+        <table style="text-align:center; margin-left: auto; margin-right: auto;">
+
+               <tr>
+                    <td>제목</td>
+                    <td>{{ video.title }}<a/></td>
+                </tr>
+               <tr>
+                    <td>코너구분</td>
+                    <td>{{ video.conner }}</td>
+               </tr>
+        </table>
+
+        <form action="/ImageEditor/videoCapture/{{ video.pk }}" method="post">
+            {% csrf_token %}
+            <div>
+                <input type="hidden" name="pk" value="{{ video.pk }}">
+                <input type="submit" class="btn btn-primary" value="Conner Classification!!">
+            </div>
+         </form>
+
+
+        {% if connerList %}
+        <table style="text-align:center;  border:1px solid black;  margin-left: auto; margin-right: auto;">
+            <thead>
+               <tr>
+                    <th>이미지</th>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>시작구간</th>
+                    <th>종료구간</th>
+                </tr>
+            </thead>
+            {% for frame in connerList %}
+            <tbody>
+                <tr>
+                    <td><img src="/media/filename_0.jpg" alt="" width=120/></td>
+                    <td>{{ frame.pk }}</td>
+                    <td>{{ frame.conner_name }}</td>
+                    <td>{{ frame.conner_start }}</td>
+                    <td>{{ frame.conner_last }}</td>
+                </tr>
+            </tbody>
+            {% endfor %}
+        </table>
+        {% endif %}
+
+    </div>
+{% endblock %}
