@@ -4,6 +4,8 @@ import shutil
 import time
 
 from PIL import Image
+Image.LOAD_TRUNCATED_IMAGES = True
+
 import cv2
 
 from django.http import HttpResponse, HttpResponseRedirect
@@ -37,8 +39,10 @@ def videoList(request):
                 conner='N'
             )
             video.save()
+            videoCapture(video)
+            return HttpResponseRedirect('/ImageEditor/videoList/')
 
-        return HttpResponseRedirect('/ImageEditor/videoList/')
+        #return HttpResponseRedirect('/ImageEditor/videoList/')
     else:
         videoList = VideoList.objects.all()
         return render(request, 'ImageEditor/videoList.html', context={'videoList': videoList})
@@ -69,11 +73,8 @@ def connerClassification(request):
         print(conner.video_title)
     return render(request, 'ImageEditor/connerClassification.html')
 
-
 ## videoCapture 1초 단위 JPG 생성 저장
-def videoCapture(request, pk):
-    video = VideoList.objects.get(pk=pk)
-
+def videoCapture(video):
     original_path = video.path + '/' + video.title
     videoObj = cv2.VideoCapture(original_path)
 
@@ -101,7 +102,7 @@ def videoCapture(request, pk):
     print('----- Finish Video Capture! -----')
     print('\n', "처리시간은: ", finishPoint - startPoint, "초 입니다.")
 
-    return render(request, 'ImageEditor/selectVideo.html', context={'video': video})
+
 
 
 def imageCrop(request):
@@ -129,7 +130,7 @@ def imageCrop(request):
                 crop_image = img.crop((left, top, right, bottom))
                 crop_image.save(cropPath + 'crop_' + filename)
 
-        return render(request, 'ImageEditor/imageCrop.html', context={'path': cropPath})
+        return render(request, 'ImageEditor/videoList.html', context={'path': cropPath})
 
     else:
         return render(request, 'ImageEditor/imageCrop.html', context={'path': ''})
