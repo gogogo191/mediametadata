@@ -6,7 +6,7 @@
   * 자른 이미지를 모델에 넣었을 때 sam인지 sauri인지 출력
 
 ### 구현 중인 기능
-* collectgugan(sam)
+* collect_gugan(sam)
   * 샘이 나오는 구간을 찾는기능
 * crop_image(mp4파일)
   * 새폴더 생성 후 영상파일을 제목부분 잘라서 저장
