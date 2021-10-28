@@ -114,21 +114,20 @@ def imageCrop(request):
         top = int(request.POST.get('top'))
         right = int(request.POST.get('right'))
         bottom = int(request.POST.get('bottom'))
-        # left : 180, top : 55, right : 370, bottom : 80
+        # left : 270, top : 85, right : 560, bottom : 120
 
         print(left, top, right, bottom)
 
         files = glob.glob(originalPath + '/*')
-        for f in files:
-            for idx, file in enumerate(files):
-                fname, ext = os.path.splitext(file)
-                print(ext)
-                if ext in ['.JPG', '.PNG', '.GIF', '.jpg', '.png', '.gif']:  # 뒷 이미지 파일 명
-                    img = Image.open(file)
-                    filename = os.path.basename(file)
-                    print(file)
-                    crop_image = img.crop((left, top, right, bottom))
-                    crop_image.save(cropPath + 'crop_' + filename)
+        for idx, file in enumerate(files):
+            fname, ext = os.path.splitext(file)
+            print(ext)
+            if ext in ['.JPG', '.PNG', '.GIF', '.jpg', '.png', '.gif']:  # 뒷 이미지 파일 명
+                img = Image.open(file)
+                filename = os.path.basename(file)
+                print(file)
+                crop_image = img.crop((left, top, right, bottom))
+                crop_image.save(cropPath + 'crop_' + filename)
 
         return render(request, 'ImageEditor/imageCrop.html', context={'path': cropPath})
 
