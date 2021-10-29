@@ -8,7 +8,7 @@ th, td {
 
 </style>
     <div style="border-radius: 1rem; margin: 2rem; text-align: center;">
-        <p>[ 번호 : {{ video.pk }} ]</p>
+        <p>[ 번호 : {{ video.id }} ]</p>
         <h1>
             Video 상세 정보
         </h1>
@@ -25,41 +25,41 @@ th, td {
                </tr>
         </table>
 
-        <form action="/ImageEditor/selectVideo/{{video.pk}}" method="post">
+        <form action="/ImageEditor/selectVideo/{{video.id}}" method="post">
             {% csrf_token %}
             <div>
-                <input type="hidden" name="pk" value="{{ video.pk }}">
+                <input type="hidden" value="{{video.id}}" name="id">
                 <input type="submit" class="btn btn-primary" value="Conner Classification!!">
             </div>
          </form>
 
 
-        {% if connerList %}
-        <table style="text-align:center;  border:1px solid black;  margin-left: auto; margin-right: auto;">
-            <thead>
-               <tr>
-                   <th>번호</th>
-                   <th>이미지</th>
-                   <th>코너</th>
-                   <th>구간시간</th>
-                   <th>시작구간</th>
-                   <th>종료구간</th>
-               </tr>
-            </thead>
-            {% for frame in connerList %}
-            <tbody>
-                <tr>
-                    <td><img src="/media/filename_0.jpg" alt="" width=120/></td>
-                    <td>{{ frame.pk }}</td>
-                    <td>{{ frame.conner_name }}</td>
-                    <td> 00:00:00 </td>
-                    <td>{{ frame.conner_start }}</td>
-                    <td>{{ frame.conner_last }}</td>
-                </tr>
-            </tbody>
-            {% endfor %}
-        </table>
-        {% endif %}
+<!--        {% if connerList %}-->
+<!--        <table style="text-align:center;  border:1px solid black;  margin-left: auto; margin-right: auto;">-->
+<!--            <thead>-->
+<!--               <tr>-->
+<!--                   <th>번호</th>-->
+<!--                   <th>이미지</th>-->
+<!--                   <th>코너</th>-->
+<!--                   <th>구간시간</th>-->
+<!--                   <th>시작구간</th>-->
+<!--                   <th>종료구간</th>-->
+<!--               </tr>-->
+<!--            </thead>-->
+<!--            {% for frame in connerList %}-->
+<!--            <tbody>-->
+<!--                <tr>-->
+<!--                    <td><img src="/media/filename_0.jpg" alt="" width=120/></td>-->
+<!--                    <td>{{ frame.id }}</td>-->
+<!--                    <td>{{ frame.conner_name }}</td>-->
+<!--                    <td> 00:00:00 </td>-->
+<!--                    <td>{{ frame.conner_start }}</td>-->
+<!--                    <td>{{ frame.conner_end }}</td>-->
+<!--                </tr>-->
+<!--            </tbody>-->
+<!--            {% endfor %}-->
+<!--        </table>-->
+<!--        {% endif %}-->
 
     </div>
 {% endblock %}

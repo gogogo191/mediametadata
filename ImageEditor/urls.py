@@ -7,8 +7,7 @@ app_name = "ImageEditor"
 
 urlpatterns = {
      path('videoList/', videoList, name='videoList'),
-     path('selectVideo/<int:pk>', selectVideo, name="selectVideo"),
+     path('selectVideo/<int:id>', selectVideo, name="selectVideo"),
      path('imageCrop/', imageCrop, name='imageCrop'),
-
 }
 

@@ -27,11 +27,10 @@
             {% for video in videoList %}
             <tbody>
                 <tr>
-                    <td>{{ video.pk }}</td>
-                    <td><a href="/ImageEditor/selectVideo/{{video.pk}}">{{ video.title }}<a/></td>
+                    <td>{{ video.id }}</td>
+                    <td><a href="/ImageEditor/selectVideo/{{video.id}}">{{ video.title }}<a/></td>
                     <td>{{ video.path }}</td>
                     <td>{{ video.conner }}</td>
-
                 </tr>
             </tbody>
             {% endfor %}
