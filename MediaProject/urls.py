@@ -21,7 +21,6 @@ from django.urls import path, include
 from ImageEditor import views
 
 urlpatterns = [
-    path('', views.index),
     path('admin/', admin.site.urls),
     path('ImageEditor/', include('ImageEditor.urls')),
 ]

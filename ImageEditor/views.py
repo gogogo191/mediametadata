@@ -2,11 +2,10 @@ import glob
 import os
 import shutil
 import time
-
 from PIL import Image
-Image.LOAD_TRUNCATED_IMAGES = True
-
 import cv2
+
+Image.LOAD_TRUNCATED_IMAGES = True
 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
@@ -15,14 +14,10 @@ from django.shortcuts import render, redirect
 from ImageEditor.models import ImageCrop, VideoList, ConnerList
 
 
-def index(request):
-    return render(request, '/ImageEditor/videoList.html')
-
-
 def videoList(request):
     if request.method == "POST":
-        downloadPath = "D:/video/"
-        files = glob.glob(downloadPath + '*.ts')
+        download_path = "D:/video/"
+        files = glob.glob(download_path + '*.ts')
         print(files)
 
         for idx, file in enumerate(files):
@@ -30,9 +25,9 @@ def videoList(request):
             fname, ext = os.path.splitext(file)
 
             filename = os.path.basename(file)
-            movePath = fname + "/"
-            createFolder(movePath)
-            shutil.move(downloadPath + filename, movePath + filename)
+            move_path = fname + "/"
+            createFolder(move_path)
+            shutil.move(download_path + filename, move_path + filename)
             video = VideoList(
                 title=filename,
                 path=fname,
@@ -40,62 +35,38 @@ def videoList(request):
             )
             video.save()
             videoCapture(video)
-            return HttpResponseRedirect('/ImageEditor/videoList/')
+            return redirect('/ImageEditor/videoList/')
 
-        #return HttpResponseRedirect('/ImageEditor/videoList/')
+        # return HttpResponseRedirect('/ImageEditor/videoList/')
     else:
         videoList = VideoList.objects.all()
         return render(request, 'ImageEditor/videoList.html', context={'videoList': videoList})
 
 
-def selectVideo(request, pk):
-    # Video 목록 중 pk(primaryKey)를 이용하여 검색
-    video = VideoList.objects.get(pk=pk)
-    print(video.title)
-    connerList = ConnerList.objects.all()
-
-    return render(request, 'ImageEditor/selectVideo.html', context={'video': video, 'connerList': connerList})
-
-
-def connerClassification(request):
-    if request.method == "POST":
-        framePath = "C:/Users/User/image/video/TheReturnofSuperman_210808/test/sam/"
-        files = glob.glob(framePath + '*.jpg')
-        conner = ConnerList(
-            frame_img=framePath + "filename_0.jpg",
-            video_title="TheReturnofSuperman_210808.mp4",
-            frame_path=framePath,
-            conner_name='sam',
-            conner_start=0,
-            conner_last=390
-        )
-        conner.save()
-        print(conner.video_title)
-    return render(request, 'ImageEditor/connerClassification.html')
-
-## videoCapture 1초 단위 JPG 생성 저장
+## videoCapture ?초 단위 JPG 생성 저장
 def videoCapture(video):
     original_path = video.path + '/' + video.title
     videoObj = cv2.VideoCapture(original_path)
 
-    seconds = 5  # 1초 단위
+    ## caputre 타이밍
+    seconds = 5  # 5초 단위
     fps = videoObj.get(cv2.CAP_PROP_FPS)  # fps : 초당 프레임
 
     multiplier = fps * seconds
 
-    frameCount = 1
+    frameCount = 0
     ret = 1
     startPoint = time.time()
     while ret:
-        frameId = int(round(videoObj.get(1)))  # current frame number
+        frameId = int(round(videoObj.get(1)))  # Frame 넘버
 
         ret, frame = videoObj.read()
         if frameId % multiplier < 1:
             # 파일명 뒤에 frameId 캡쳐 타임 기록해두어 나중에 구간 선정 시 파일명 참고
-            framePath = video.path + '/frame'
-            createFolder(framePath)
+            frame_path = video.path + '/frame'
+            createFolder(frame_path)
             filename = os.path.basename(video.title)
-            cv2.imwrite(framePath + "/" + filename + "_%d.jpg" % frameId, frame)
+            cv2.imwrite(frame_path + "/%d.jpg" % (frameCount * seconds), frame)
             frameCount += 1
     finishPoint = time.time()
 
@@ -103,37 +74,51 @@ def videoCapture(video):
     print('\n', "처리시간은: ", finishPoint - startPoint, "초 입니다.")
 
 
-
-
-def imageCrop(request):
-    originalPath = "D:/video/superman2/frame/"
-    cropPath = "D:/video/superman2/crop/"
-    createFolder(cropPath)
+def selectVideo(request, pk):
+    # Video 목록 중 pk(primaryKey)를 이용하여 검색
+    video = VideoList.objects.get(pk=pk)
 
     if request.method == "POST":
-        left = int(request.POST.get('left'))
-        top = int(request.POST.get('top'))
-        right = int(request.POST.get('right'))
-        bottom = int(request.POST.get('bottom'))
-        # left : 270, top : 85, right : 560, bottom : 120
+        connerClassification(video)
+        video.path
 
-        print(left, top, right, bottom)
-
-        files = glob.glob(originalPath + '/*')
-        for idx, file in enumerate(files):
-            fname, ext = os.path.splitext(file)
-            print(ext)
-            if ext in ['.JPG', '.PNG', '.GIF', '.jpg', '.png', '.gif']:  # 뒷 이미지 파일 명
-                img = Image.open(file)
-                filename = os.path.basename(file)
-                print(file)
-                crop_image = img.crop((left, top, right, bottom))
-                crop_image.save(cropPath + 'crop_' + filename)
-
-        return render(request, 'ImageEditor/videoList.html', context={'path': cropPath})
+        return redirect('ImageEditor/selectVideo/', context={'video':video})
 
     else:
-        return render(request, 'ImageEditor/imageCrop.html', context={'path': ''})
+        connerList = ConnerList.objects.all()
+        return render(request, 'ImageEditor/selectVideo.html', context={'video': video, 'connerList': connerList})
+
+
+def connerClassification(video):
+
+    frame_path = video.path + '/frame'
+    crop_path = video.path + '/crop'
+    createFolder(crop_path)
+
+    # [전처리1] imageCrop
+    imageCrop(frame_path, crop_path)
+    # [전처리2] imageGenerator : rescale
+
+
+# [전처리1] imageCrop (학습 영역 crop_coordinate 수정)
+def imageCrop(frame_path, crop_path):
+    crop_coordinate = {
+        'left': 270,
+        'top': 85,
+        'right': 560,
+        'bottom': 120
+    }
+    print(crop_coordinate)
+
+    files = glob.glob(frame_path + '/*.jpg')
+    for idx, file in enumerate(files):
+        fname, ext = os.path.splitext(file)
+        print(ext)
+        img = Image.open(file)
+        filename = os.path.basename(file)
+        crop_image = img.crop(
+            (crop_coordinate['left'], crop_coordinate['top'], crop_coordinate['right'], crop_coordinate['bottom']))
+        crop_image.save(crop_path + '/' + filename)
 
 
 def createFolder(dir):
@@ -142,5 +127,3 @@ def createFolder(dir):
             os.makedirs(dir)
     except OSError:
         print('Error: Creating directory. ' + dir)
-
-
