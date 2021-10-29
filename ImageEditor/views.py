@@ -102,19 +102,18 @@ def selectVideo(request, id):
 
 def connerClassification(video):
     frame_path = video.path + '/frame/'
-    crop_path = 'D:/video/crop/'
+    crop_path = video.path + '/pred/crop/'
+    pred_path = video.path + '/pred'
     createFolder(crop_path)
 
     # [전처리1] imageCrop
     imageCrop(frame_path, crop_path)
     print("전처리1 : 코너 영역 분리 완료")
     # [전처리2] imageGenerator : rescale
-    image_generator = imageGenerator(crop_path)
+    image_generator = imageGenerator(pred_path)
     print(image_generator)
-    #filenames = image_generator.filenames
-    #print(filenames)
     print("전처리2 : ImageGenrator Rescale 완료")
-    #prediction(crop_path)
+    prediction(image_generator)
 
 
 # [전처리1] imageCrop (학습 영역 crop_coordinate 수정)
@@ -132,14 +131,15 @@ def imageCrop(frame_path, crop_path):
         img = Image.open(file)
         filename = os.path.basename(file)
         crop_image = img.crop((crop_coordinate['left'], crop_coordinate['top'], crop_coordinate['right'], crop_coordinate['bottom']))
-        crop_image.save(crop_path + filename)
+        file_numbering = '0' * (10-len(filename))
+        crop_image.save(crop_path + file_numbering + filename)
 
 
 # [전처리2] imageGenerator
 def imageGenerator(crop_path):
     image_datagen = ImageDataGenerator(rescale=1./255)
-    image_generator = image_datagen.flow_from_directory(crop_path, batch_size=128, target_size=(35, 290),
-                                                        class_mode='categorical')
+    image_generator = image_datagen.flow_from_directory(crop_path, batch_size=128, target_size=(35, 290), shuffle=False, class_mode=None)
+    image_generator.reset()
     return image_generator
 
 
@@ -148,21 +148,35 @@ def prediction(image_generator):
     model_path = 'D:/video/model/superman_cnn_model.h5'
     model = load_model(model_path)
 
-    print(model)
-    pred = model.predict(image_generator)
+    conner_map = {
+        0: 'hyunbin',
+        1: 'juho',
+        2: 'jung',
+        3: 'sam',
+        4: 'sauri',
+        5: 'yoon'
+    }
 
-    #cl = np.round(pred)
-    #filenames = image_generator.filenames
-    #print(filenames)
-    #print(pred)
+    pred = model.predict_generator(image_generator)
+    df_pred = pd.DataFrame(pred)
+    df_pred.rename(columns=conner_map, inplace=True)
+    pd.options.display.float_format = '{:.2f}'.format
 
+    file_names = image_generator.filenames
+    df_file = pd.DataFrame({"file": file_names})
+
+    result = pd.concat([df_file, df_pred], axis=1)
+    print(result.head(50))
+    print(result.iloc[500:510])
     # Data Frame
-    #result = pd.DataFrame({"file": filenames, "pr": pred[:, 0], "class": cl[:, 0]})
-    #print(result)
+    #result = pd.DataFrame({"file": filenames, "pr": pred[:]})
+    #result.sort_values(by=['file'], axis=0)
+    #result.reset_index(drop=True)
+    #print(result.head(30))
 
-    np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
-    print(image_generator.class_indices)
-    print(pred)
+    #np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
+    #print(image_generator.class_indices)
+    #print(pred)
 
 
 
