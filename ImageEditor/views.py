@@ -77,15 +77,15 @@ def videoCapture(video):
 def selectVideo(request, pk):
     # Video 목록 중 pk(primaryKey)를 이용하여 검색
     video = VideoList.objects.get(pk=pk)
+    connerList = ConnerList.objects.all()
 
     if request.method == "POST":
         connerClassification(video)
         video.path
 
-        return redirect('ImageEditor/selectVideo/', context={'video':video})
+        return redirect('ImageEditor/selectVideo/', context={'video': video, 'connerList': connerList})
 
     else:
-        connerList = ConnerList.objects.all()
         return render(request, 'ImageEditor/selectVideo.html', context={'video': video, 'connerList': connerList})
 
 
