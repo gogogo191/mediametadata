@@ -14,7 +14,7 @@ class Video(models.Model):
 class Conner(models.Model):
     id = models.BigAutoField(help_text="Conner ID", primary_key=True)
     frame_img = models.ImageField(help_text="Conner Representative Image", blank=True, null=True)
-    video_id = models.ForeignKey("Video", related_name="Video", on_delete=models.CASCADE, db_column="video_id")
+    video_id = models.IntegerField(help_text="Video_id")
     conner_name = models.CharField(help_text="Conner Name", max_length=50)
     conner_start = models.IntegerField(help_text="Conner Start")
     conner_end = models.IntegerField(help_text="Conner End")

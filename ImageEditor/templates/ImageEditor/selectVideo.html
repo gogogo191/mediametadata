@@ -34,32 +34,32 @@ th, td {
          </form>
 
 
-<!--        {% if connerList %}-->
-<!--        <table style="text-align:center;  border:1px solid black;  margin-left: auto; margin-right: auto;">-->
-<!--            <thead>-->
-<!--               <tr>-->
-<!--                   <th>번호</th>-->
-<!--                   <th>이미지</th>-->
-<!--                   <th>코너</th>-->
-<!--                   <th>구간시간</th>-->
-<!--                   <th>시작구간</th>-->
-<!--                   <th>종료구간</th>-->
-<!--               </tr>-->
-<!--            </thead>-->
-<!--            {% for frame in connerList %}-->
-<!--            <tbody>-->
-<!--                <tr>-->
-<!--                    <td><img src="/media/filename_0.jpg" alt="" width=120/></td>-->
-<!--                    <td>{{ frame.id }}</td>-->
-<!--                    <td>{{ frame.conner_name }}</td>-->
-<!--                    <td> 00:00:00 </td>-->
-<!--                    <td>{{ frame.conner_start }}</td>-->
-<!--                    <td>{{ frame.conner_end }}</td>-->
-<!--                </tr>-->
-<!--            </tbody>-->
-<!--            {% endfor %}-->
-<!--        </table>-->
-<!--        {% endif %}-->
+        {% if connerList %}
+        <table style="text-align:center;  border:1px solid black;  margin-left: auto; margin-right: auto;">
+            <thead>
+               <tr>
+                   <th>번호</th>
+                   <th>이미지</th>
+                   <th>코너</th>
+                   <th>구간시간</th>
+                   <th>시작구간</th>
+                   <th>종료구간</th>
+               </tr>
+            </thead>
+            {% for conner in connerList %}
+            <tbody>
+                <tr>
+                    <td>{{ conner.id }}</td>
+                    <td><img src="C:\project\META21\MediaProject\media\10.jpg" alt="" width=120/></td>
+                    <td>{{ conner.conner_name }}</td>
+                    <td> 00:00:00 </td>
+                    <td>{{ conner.conner_start }}</td>
+                    <td>{{ conner.conner_end }}</td>
+                </tr>
+            </tbody>
+            {% endfor %}
+        </table>
+        {% endif %}
 
     </div>
 {% endblock %}
