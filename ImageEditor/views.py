@@ -97,14 +97,17 @@ def selectVideo(request, id):
         print(len(conner_result))
         for i in range(0, len(conner_result)):
             thumbnailMake(video, conner_result.iloc[i, 1])
+            thumbnail = "/media/" + os.path.splitext(video.title)[0] + "/" + str(conner_result.iloc[i, 1]) + ".jpg"
+            print(thumbnail)
+
+            print(thumbnail)
             conner = Conner(
-                frame_img="/media/" + video.path + "/" + str(conner_result.iloc[i, 1]) + ".jpg",
+                frame_img=thumbnail,
                 video_id=video.id,
                 conner_name=conner_result.iloc[i, 0],
                 conner_start=conner_result.iloc[i, 1],
                 conner_end=conner_result.iloc[i, 2],
             )
-
             conner.save()
         video.conner = 'Y'
         video.save()
@@ -119,15 +122,14 @@ def selectVideo(request, id):
 def thumbnailMake(video, conner_start):
     frame = video.path + "/frame/" + str(conner_start) + ".jpg"
     frame_name = os.path.basename(frame)
-    print(frame)
-    print(frame_name)
-    thumbnail_path = "C:/project/META21/MediaProject/media/" + os.path.splitext(video.title)[0]
-    print(thumbnail_path)
+    #print(frame)
+    #print(frame_name)
+    thumbnail_path = "C:/project/mediametadata/media/" + "/" + os.path.splitext(video.title)[0]
+    #print(thumbnail_path)
     createFolder(thumbnail_path)
     thumbnail = thumbnail_path + "/" + frame_name
 
     shutil.copy(frame, thumbnail)
-
 
 
 def connerClassification(video):
