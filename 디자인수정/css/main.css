@@ -1,0 +1,58 @@
+  #main-video {
+    
+  }
+  #contain {
+    padding-left: 10%;
+  }
+  /* .popup_bg {
+    position: none; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%; 
+    display: none; 
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+  .popup {
+    position: absolute; 
+    top: 50%; 
+    left: calc(50% - 250px) ;
+    width: 500px; 
+    height: 400px; 
+    display: none; 
+    background-color: #fff;
+  } */
+  /* .btn{
+    width:100px;
+    height:40px;
+    line-height: 40px;
+    background: gray;
+    color: #fff;
+    text-align: center;
+    cursor:pointer;
+  } */
+  .mytable{
+    width:1000px;
+    margin:0 auto;
+  }
+  html, body {
+   margin:0;
+   padding:0;
+   height:100%;
+}
+.contents-wrap {
+   min-height:100%;
+   position:relative;
+   padding-bottom:100px;/* footer height */
+}
+footer{ position:fixed; 
+  left:0px; 
+  bottom:0px; 
+  height:70px; 
+  width:100%; 
+  padding-left:50px;
+  padding-right:50px;
+  padding-top:10px;
+  padding-bottom:10px;
+  background:rgb(196, 194, 194); 
+  color: black; }
